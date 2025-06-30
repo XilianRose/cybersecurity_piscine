@@ -30,10 +30,10 @@ path = args.p
 
 print(f"🕷️ {LILAC} Starting web scraper...{NC}")
 
-print(f"URL:		{url}")
-print(f"Recursion:	{recursion}")
-print(f"Max Depth:	{max_depth}")
-print(f"Path:		{path}")
+print(f"URL		: {url}")
+print(f"Recursion	: {recursion}")
+print(f"Max Depth	: {max_depth}")
+print(f"Path		: {path}")
 
 if not os.path.exists(path):
 	try:
@@ -74,12 +74,14 @@ def scrape_images(url, path):
 					continue
 				with open(filename, 'wb') as f:
 					f.write(img_response.content)
-				print(f"Downloaded: {filename}")
+				print(f"{GREEN}Downloaded{NC}: {filename}")
 			else:
-				print(f"Failed to download {img_url}: {img_response.status_code}")
+				print(f"{RED} Failed to download {img_url}{NC}: {img_response.status_code}")
 		except Exception as e:
-			print(f"Error downloading {img_url}: {e}")
+			print(f"{RED} Error downloading {img_url}{NC}: {e}")
 
+
+# only in domain
 def recursive_scrape(url, depth):
 	if depth > max_depth:
 		return
