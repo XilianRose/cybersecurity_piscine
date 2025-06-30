@@ -69,6 +69,9 @@ def scrape_images(url, path):
 			img_response = requests.get(img_url)
 			if img_response.status_code == 200:
 				filename = os.path.join(path, sanitize_filename(img_url.split('/')[-1]))
+				if os.path.exists(filename):
+					print(f"{GRAY}File {filename} already exists, skipping download...{NC}")
+					continue
 				with open(filename, 'wb') as f:
 					f.write(img_response.content)
 				print(f"Downloaded: {filename}")
