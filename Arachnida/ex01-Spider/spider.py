@@ -80,11 +80,16 @@ def scrape_images(url, path):
 		except Exception as e:
 			print(f"{RED} Error downloading {img_url}{NC}: {e}")
 
+visited_urls = set(url)
 
 # only in domain
 def recursive_scrape(url, depth):
 	if depth > max_depth:
 		return
+	if url in visited_urls:
+		print(f"{GRAY}Already visited {url}, skipping...{NC}")
+		return
+	visited_urls.add(url)
 	print(f"Scraping {url} at depth {depth}")
 	scrape_images(url, path)
 	response = requests.get(url)
