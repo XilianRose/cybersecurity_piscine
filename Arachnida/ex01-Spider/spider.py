@@ -28,6 +28,12 @@ recursion = args.r
 max_depth = args.l
 path = args.p
 
+headers = {
+	"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+	"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+	"Accept-Language": "en-US,en;q=0.5",
+}
+
 print(f"🕷️ {LILAC} Starting web scraper...{NC}")
 
 print(f"URL		: {url}")
@@ -46,11 +52,11 @@ def sanitize_filename(filename):
 	return ''.join(c for c in filename if c.isalnum() or c in (' ', '.', '_')).rstrip().replace('"', '&quot;')
 
 def scrape_images(url, path):
-	response = requests.get(url)
+	response = requests.get(url, headers=headers)
 	if response.status_code != 200:
 		print(f"{RED}Error{NC}: Unable to access {url}")
 		print(f"Status code: {response.status_code}")
-		exit(1)
+		return
 	soup = BeautifulSoup(response.text, 'html.parser')
 	images = soup.find_all('img')
 	if not images:
@@ -60,13 +66,13 @@ def scrape_images(url, path):
 		img_url = img.get('src')
 		if not img_url:
 			continue
-		if not img_url.endswith(('.jpg', '.jpeg', '.png', '.gif', '.bmp')):
+		if not img_url.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.bmp')):
 			print(f"{GRAY}Skipping non-image URL: {img_url}{NC}")
 			continue
 		if not img_url.startswith(('http://', 'https://')):
 			img_url = requests.compat.urljoin(url, img_url)
 		try:
-			img_response = requests.get(img_url)
+			img_response = requests.get(img_url, headers=headers)
 			if img_response.status_code == 200:
 				filename = os.path.join(path, sanitize_filename(img_url.split('/')[-1]))
 				if os.path.exists(filename):
