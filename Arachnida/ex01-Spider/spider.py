@@ -39,7 +39,7 @@ if not os.path.exists(path):
 	try:
 		os.makedirs(path, exist_ok=True)
 	except Exception as e:
-		print(f"Error creating directory {path}: {e}")
+		print(f"{RED}Error creating directory {path}{NC}: {e}")
 		exit(1)
 
 def sanitize_filename(filename):
@@ -48,7 +48,7 @@ def sanitize_filename(filename):
 def scrape_images(url, path):
 	response = requests.get(url)
 	if response.status_code != 200:
-		print(f"Error: Unable to access {url}")
+		print(f"{RED}Error{NC}: Unable to access {url}")
 		print(f"Status code: {response.status_code}")
 		exit(1)
 	soup = BeautifulSoup(response.text, 'html.parser')
@@ -61,7 +61,7 @@ def scrape_images(url, path):
 		if not img_url:
 			continue
 		if not img_url.endswith(('.jpg', '.jpeg', '.png', '.gif', '.bmp')):
-			print(f"Skipping non-image URL: {img_url}")
+			print(f"{GRAY}Skipping non-image URL: {img_url}{NC}")
 			continue
 		if not img_url.startswith(('http://', 'https://')):
 			img_url = requests.compat.urljoin(url, img_url)
@@ -82,7 +82,6 @@ def scrape_images(url, path):
 
 visited_urls = set(url)
 
-# only in domain
 def recursive_scrape(url, depth):
 	if depth > max_depth:
 		return
@@ -90,7 +89,7 @@ def recursive_scrape(url, depth):
 		print(f"{GRAY}Already visited {url}, skipping...{NC}")
 		return
 	visited_urls.add(url)
-	print(f"Scraping {url} at depth {depth}")
+	print(f"{LILAC}Scraping {url} at depth {depth}{NC}")
 	scrape_images(url, path)
 	response = requests.get(url)
 	if response.status_code != 200:
