@@ -54,7 +54,7 @@ def scrape_images(url, path):
 	soup = BeautifulSoup(response.text, 'html.parser')
 	images = soup.find_all('img')
 	if not images:
-		print(f"No images found at {url}")
+		print(f"{YELLOW} No images found at {url}{NC}")
 		exit(0)
 	for img in images:
 		img_url = img.get('src')
