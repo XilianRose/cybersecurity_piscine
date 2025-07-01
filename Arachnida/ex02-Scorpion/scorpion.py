@@ -23,7 +23,6 @@ def get_exif_data(filename, image):
 	try:
 		exif_data = image._getexif()
 		if not exif_data:
-			print(f"{YELLOW}No EXIF data found in {filename}{NC}")
 			return None
 		return exif_data
 	except Exception as e:
@@ -32,6 +31,7 @@ def get_exif_data(filename, image):
 	
 def print_exif_data(exif_data):
 	if not exif_data:
+		print(f"{YELLOW}No EXIF data found.{NC}")
 		return
 	print(f"{GREEN}	EXIF Data extracted:{NC}")
 	for tag, value in exif_data.items():
@@ -40,6 +40,14 @@ def print_exif_data(exif_data):
 			print(f"{CYAN}{tag_name}{NC}: {value}")
 		except Exception as e:
 			print(f"{RED}Error processing tag {tag}: {e}{NC}")
+
+def print_metadata(meta_data):
+	if not meta_data:
+		print(f"{YELLOW}No metadata found.{NC}")
+		return
+	print(f"{GREEN}	Metadata extracted:{NC}")
+	for key, value in meta_data.items():
+		print(f"{CYAN}{key}{NC}: {value}")
 
 def print_basic_attributes(filename, image):
 	try:
@@ -66,5 +74,6 @@ for filename in get_args().filenames:
 		continue
 	image = Image.open(filename)
 	print_basic_attributes(filename, image)
+	print_metadata(image.info)
 	exif_data = get_exif_data(filename, image)
 	print_exif_data(exif_data)
