@@ -51,12 +51,14 @@ if not os.path.exists(path):
 def sanitize_filename(filename):
 	return ''.join(c for c in filename if c.isalnum() or c in (' ', '.', '_')).rstrip().replace('"', '&quot;')
 
-def generate_filename(filename):
+def generate_filename(filename, img_response):
 	fileBaseName = os.path.basename(filename)
 	fileName = os.path.splitext(fileBaseName)[0]
 	fileExtension = os.path.splitext(fileBaseName)[1]
 	index = 0
 	while os.path.exists(filename):
+		if check_if_duplicate(filename, img_response):
+			return None
 		index += 1
 		filename = f"{path}/{fileName}({index}){fileExtension}"
 	return filename
@@ -98,7 +100,10 @@ def scrape_images(url, path):
 					if check_if_duplicate(filename, img_response):
 						continue
 					else:
-						filename = generate_filename(filename)
+						new_filename = generate_filename(filename, img_response)
+						if new_filename is None:
+							continue
+						filename = new_filename
 				with open(filename, 'wb') as f:
 					f.write(img_response.content)
 				print(f"{GREEN}Downloaded{NC}: {filename}")
