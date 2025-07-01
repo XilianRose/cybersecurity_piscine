@@ -51,6 +51,25 @@ if not os.path.exists(path):
 def sanitize_filename(filename):
 	return ''.join(c for c in filename if c.isalnum() or c in (' ', '.', '_')).rstrip().replace('"', '&quot;')
 
+def generate_filename(filename):
+	fileBaseName = os.path.basename(filename)
+	fileName = os.path.splitext(fileBaseName)[0]
+	fileExtension = os.path.splitext(fileBaseName)[1]
+	index = 0
+	while os.path.exists(filename):
+		index += 1
+		filename = f"{path}/{fileName}({index}){fileExtension}"
+	return filename
+
+def check_if_duplicate(filename, img_response):
+	if img_response.content:
+		with open(filename, 'rb') as f:
+			existing_content = f.read()
+		if existing_content == img_response.content:
+			print(f"{GRAY}File {filename} already exists, skipping download...{NC}")
+			return True
+	return False
+
 def scrape_images(url, path):
 	response = requests.get(url, headers=headers)
 	if response.status_code != 200:
@@ -76,8 +95,10 @@ def scrape_images(url, path):
 			if img_response.status_code == 200:
 				filename = os.path.join(path, sanitize_filename(img_url.split('/')[-1]))
 				if os.path.exists(filename):
-					print(f"{GRAY}File {filename} already exists, skipping download...{NC}")
-					continue
+					if check_if_duplicate(filename, img_response):
+						continue
+					else:
+						filename = generate_filename(filename)
 				with open(filename, 'wb') as f:
 					f.write(img_response.content)
 				print(f"{GREEN}Downloaded{NC}: {filename}")
