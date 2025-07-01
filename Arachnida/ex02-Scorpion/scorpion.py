@@ -55,7 +55,7 @@ def print_basic_attributes(filename, image):
 		created_time = datetime.datetime.fromtimestamp(os.path.getctime(filename))
 		last_modified_time = datetime.datetime.fromtimestamp(os.path.getmtime(filename))
 		print(f"{GREEN}	Basic Attributes:{NC}")
-		print(f"{LILAC}File{NC}: {filename}")
+		print(f"{LILAC}File{NC}: {os.path.basename(filename)}")
 		print(f"{LILAC}Size{NC}: {file_size} bytes")
 		print(f"{LILAC}Format{NC}: {image.format}")
 		print(f"{LILAC}Mode{NC}: {image.mode}")
