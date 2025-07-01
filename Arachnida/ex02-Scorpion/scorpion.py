@@ -41,14 +41,6 @@ def print_exif_data(exif_data):
 		except Exception as e:
 			print(f"{RED}Error processing tag {tag}: {e}{NC}")
 
-def print_metadata(meta_data):
-	if not meta_data:
-		print(f"{YELLOW}No metadata found.{NC}")
-		return
-	print(f"{GREEN}	Metadata extracted:{NC}")
-	for key, value in meta_data.items():
-		print(f"{CYAN}{key}{NC}: {value}")
-
 def print_basic_attributes(filename, image):
 	try:
 		file_size = os.path.getsize(filename)
@@ -74,6 +66,5 @@ for filename in get_args().filenames:
 		continue
 	image = Image.open(filename)
 	print_basic_attributes(filename, image)
-	print_metadata(image.info)
 	exif_data = get_exif_data(filename, image)
 	print_exif_data(exif_data)
